@@ -1,102 +1,156 @@
 # Fibonacci Heap Visualizer
 
-A small, educational web app that implements and visualizes a Fibonacci Heap. The project has a Node/Express server that contains an in-memory Fibonacci Heap implementation and a React client that fetches the heap state and renders it on a canvas.
+An interactive web application for visualizing and understanding the operations of a **Fibonacci Heap**. The project consists of a **React frontend** for visualization and a **Node.js/Express backend** that implements an in-memory Fibonacci Heap and exposes REST APIs for performing heap operations.
 
-This README explains what the project contains, how to run it locally, the API the server exposes, and some developer notes.
+## 🌐 Live Demo
 
-## Project structure
+**Frontend:**  
+https://fibonacci-heap-visualizer.vercel.app
 
-- `server/` — Express API and the Fibonacci Heap implementation
+**Backend API:**  
+https://fibonacci-heap-visualizer.onrender.com
 
-  - `src/heap.js` — in-memory Fibonacci Heap class with insert, extractMin, delete, union, serialization
-  - `src/index.js` — Express endpoints for manipulating the heap
-  - `package.json` — server scripts & dependencies
-
-- `client/` — React application that visualizes the heap
-  - `src/App.js` — main app that talks to the server
-  - `src/components/Controls.js` — UI controls for insert, extract, clear, union
-  - `src/components/HeapView.js` — canvas-based visualizer
-  - `src/components/NodeTable.js` — tabular view of nodes
-  - `package.json` — client scripts & dependencies
+---
 
 ## Features
 
-- Insert numeric keys into a Fibonacci heap (server-side)
-- Extract minimum
-- Delete a node (by node ID)
-- Union via inserting multiple keys at once
-- Visual rendering of the heap: roots, children, node positions and connections
-- Simple node table showing ID, key and parent ID
+- Insert keys into a Fibonacci Heap
+- Extract the minimum node
+- Delete a node by its ID
+- Union multiple keys into the heap
+- Interactive visualization of heap structure
+- Canvas-based rendering of root lists and child relationships
+- Tabular view of node information
+- RESTful API for heap operations
 
-## Quick start (Windows / PowerShell)
+---
 
-Open two terminals (one for server, one for client). From the project root run:
+## Project Structure
 
-# Server
-
-```powershell
-cd server
-npm install
-# start server on port 5000
-npm run start
-# (or use nodemon during development)
-npm run dev
+```
+Fibonacci-Heap-Visualizer/
+│
+├── client/                    # React Frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Controls.js
+│   │   │   ├── HeapView.js
+│   │   │   └── NodeTable.js
+│   │   └── App.js
+│   └── package.json
+│
+├── server/                    # Express Backend
+│   ├── src/
+│   │   ├── heap.js
+│   │   └── index.js
+│   └── package.json
+│
+└── README.md
 ```
 
-# Client
+---
 
-```powershell
+## Technologies Used
+
+### Frontend
+
+- React
+- HTML5
+- CSS3
+- JavaScript
+- Canvas API
+
+### Backend
+
+- Node.js
+- Express.js
+
+---
+
+## Running Locally
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/kunjpatel6151/Fibonacci-Heap-Visualizer.git
+cd Fibonacci-Heap-Visualizer
+```
+
+### Start the Backend
+
+```bash
+cd server
+npm install
+npm start
+```
+
+The backend runs on:
+
+```
+http://localhost:5000
+```
+
+---
+
+### Start the Frontend
+
+Open another terminal.
+
+```bash
 cd client
 npm install
 npm start
 ```
 
-The React app expects the API at `http://localhost:5000/api`. The server listens on port `5000` by default.
+The React application runs on:
 
-## API
+```
+http://localhost:3000
+```
 
-All endpoints are under `/api`.
+---
 
-- GET `/api/heap` — returns serialized heap state: { nodes, roots, min, n }
-- POST `/api/insert` — body: { key: number } → returns { id }
-- POST `/api/extract-min` — no body → returns { min: { key, id } | null }
-- POST `/api/delete` — body: { id: number } → returns { success: true|false }
-- POST `/api/union` — body: { keys: number[] } → inserts each key, returns success and heap summary
-- POST `/api/clear` — clears the heap (resets state)
+## API Endpoints
 
-Note: the server uses CORS and JSON payloads.
+Base URL
 
-## Implementation notes
+```
+/api
+```
 
-- The heap implementation is in `server/src/heap.js`. It keeps nodes as circular doubly-linked lists for root lists and child lists. Nodes are assigned numeric IDs for client-side referencing.
-- The `toJSON()` method serializes nodes into objects containing id, key, degree, marked, parent and children arrays. The client uses this to reconstruct relationships and compute node positions for the canvas.
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/heap` | Returns the current heap |
+| POST | `/insert` | Inserts a new key |
+| POST | `/extract-min` | Removes the minimum node |
+| POST | `/delete` | Deletes a node by ID |
+| POST | `/union` | Inserts multiple keys |
+| POST | `/clear` | Clears the heap |
 
-## Known issues / caveats
+---
 
-- `server/src/index.js` declares `const heap = new FibonacciHeap();` at the top, but the `/api/clear` route attempts to reassign `heap = new FibonacciHeap();`. Reassigning a `const` will throw. Quick fixes:
+## Implementation
 
-  - Change the declaration to `let heap = new FibonacciHeap();`, or
-  - Modify the clear route to call `heap.clear()` if provided.
+The backend implements a complete in-memory Fibonacci Heap supporting:
 
-- The heap implementation is meant for educational/demo use and stores everything in memory. It does not persist state across server restarts.
+- Insert
+- Extract Minimum
+- Delete
+- Union
+- Heap Serialization
 
-- The find-by-id logic in `heap._findNodeById()` performs a BFS and is safe for the in-memory structure, but it's not optimized for very large heaps.
+The frontend communicates with the backend using REST APIs and visualizes the heap structure in real time using a canvas-based renderer.
 
-## Development notes and suggestions
+---
 
-- If you want hot-reload for the server during development, use `npm run dev` in the `server` folder (requires `nodemon`, already in `devDependencies`).
-- The client is a Create React App project — use `npm start` to boot it in development mode.
-- Consider adding more defensive validation on the server for inputs coming from the client (the code performs some checks but could be stricter).
-- Tests: currently there are no automated tests. A good follow-up would be to add unit tests for `server/src/heap.js` (e.g., using Jest) and a few integration tests for the API.
+## Notes
 
-## Contributing
+- Heap data is stored entirely in memory.
+- The heap state is reset whenever the backend server restarts.
+- Designed for educational purposes to demonstrate Fibonacci Heap operations and structure.
 
-Contributions are welcome. Suggested small first tasks:
-
-- Fix the clear route bug (see Known issues).
-- Add unit tests for heap operations.
-- Improve layout algorithm in `client/src/components/HeapView.js` to reduce node overlap for larger heaps.
+---
 
 ## License
 
-This project is provided for educational use. Add your preferred license if you intend to publish it.
+This project is intended for educational purposes.
