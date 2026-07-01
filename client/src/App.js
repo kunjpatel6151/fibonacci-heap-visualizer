@@ -3,7 +3,7 @@ import HeapView from './components/HeapView';
 import Controls from './components/Controls';
 import NodeTable from './components/NodeTable';  // Add this import
 
-const API = 'http://localhost:5000/api';
+const API = 'https://fibonacci-heap-visualizer.onrender.com/api';
 
 export default function App() {
   const [heap, setHeap] = useState({ n: 0, roots: [], nodes: [], min: null });
