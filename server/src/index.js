@@ -4,13 +4,11 @@ const FibonacciHeap = require('./heap');
 
 const app = express();
 
-// Enable CORS and JSON parsing
 app.use(cors());
 app.use(express.json());
 
 let heap = new FibonacciHeap();
 
-// Define API routes
 app.get('/api/heap', (req, res) => {
     res.json(heap.toJSON());
 });
@@ -29,7 +27,6 @@ app.post('/api/extract-min', (req, res) => {
     res.json({ min });
 });
 
-// NOTE: decrease-key endpoint removed — feature deprecated/disabled
 
 app.post('/api/delete', (req, res) => {
     const { id } = req.body;
@@ -45,7 +42,6 @@ app.post('/api/union', (req, res) => {
   if (!Array.isArray(keys)) return res.status(400).json({ error: 'keys must be an array' });
 
   try {
-    // insert each key into the current heap (effectively union with a new heap)
     keys.forEach(k => {
       const num = (typeof k === 'number') ? k : Number(k);
       if (!Number.isFinite(num)) throw new Error(`invalid key: ${k}`);
@@ -72,13 +68,11 @@ app.post('/api/clear', (req, res) => {
     }
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).json({ error: err.message });
 });
 
-// 404 handler - must be last
 app.use((req, res) => {
     res.status(404).json({ error: `Endpoint not found: ${req.path}` });
 });

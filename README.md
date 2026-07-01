@@ -100,12 +100,3 @@ Contributions are welcome. Suggested small first tasks:
 ## License
 
 This project is provided for educational use. Add your preferred license if you intend to publish it.
-
----
-
-If you'd like, I can:
-
-- Open a PR that fixes the `clear` endpoint (change `const heap` to `let heap`) and add a quick test; or
-- Add a short CONTRIBUTING.md or demo GIF/Screenshots to the README.
-
-Tell me what you'd like next.
